@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "julian.arteaga.common", "julian.arteaga.common\julian.arteaga.common.csproj", "{5AFEBE7E-007C-413D-981A-964DCECE845B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "julian.arteaga.common", "julian.arteaga.common\julian.arteaga.common.csproj", "{5AFEBE7E-007C-413D-981A-964DCECE845B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "julian.arteaga.functions", "julian.arteaga.functions\julian.arteaga.functions.csproj", "{DDB12C4C-5448-48B0-A6A9-BC8FEFAA722D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "julian.arteaga.functions", "julian.arteaga.functions\julian.arteaga.functions.csproj", "{DDB12C4C-5448-48B0-A6A9-BC8FEFAA722D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "julian.arteaga.Test", "julian.arteaga.Test\julian.arteaga.Test.csproj", "{6516BABE-D7C4-4723-A9E6-C22BBEA26DEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "julian.arteaga.Test", "julian.arteaga.Test\julian.arteaga.Test.csproj", "{6516BABE-D7C4-4723-A9E6-C22BBEA26DEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
