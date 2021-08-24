@@ -16,7 +16,7 @@ namespace julian.arteaga.functions.Functions
 {
     public static class todoApi
     {
-        private static bool findResult;
+      
 
         [FunctionName(nameof(Createtodo))]
         public static async Task<IActionResult> Createtodo(
@@ -79,7 +79,7 @@ namespace julian.arteaga.functions.Functions
 
           
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            todo todo = JsonConvert.DeserializeObject<todo>(requestBody); //leyendo el cuerpo del mensaje
+            todo Todo = JsonConvert.DeserializeObject<todo>(requestBody); //leyendo el cuerpo del mensaje
 
 
             //Validate todo id
@@ -96,18 +96,16 @@ namespace julian.arteaga.functions.Functions
             }
 
             //update todo
-            todoEntity todoEntity = (todoEntity)findResult.Result;
-            todoEntity.Iscompleted = todo.Iscompleted;
+            todoEntity TodoEntity = (todoEntity)findResult.Result;
+            TodoEntity.Iscompleted = Todo.Iscompleted;
 
-            if (string.IsNullOrEmpty(todo.TaskDescription))
+            if (!string.IsNullOrEmpty(Todo.TaskDescription))
             {
-                todoEntity.TaskDescription = todo.TaskDescription;
+                TodoEntity.TaskDescription = Todo.TaskDescription;
 
             }
 
-
-
-            TableOperation AddOperation = TableOperation.Replace(todoEntity);
+            TableOperation AddOperation = TableOperation.Replace(TodoEntity);
             await todoTable.ExecuteAsync(AddOperation);
 
             string message = $"todo: {id}, updated in table.";
@@ -119,7 +117,7 @@ namespace julian.arteaga.functions.Functions
             {
                 IaSuccess = true,
                 message = message,
-                Result = todoEntity
+                Result = TodoEntity
 
             });
         }
