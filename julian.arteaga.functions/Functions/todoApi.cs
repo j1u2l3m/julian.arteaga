@@ -16,12 +16,12 @@ namespace julian.arteaga.functions.Functions
 {
     public static class todoApi
     {
-      
+
 
         [FunctionName(nameof(Createtodo))]
         public static async Task<IActionResult> Createtodo(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "todo")] HttpRequest req,
-            [Table("todo", Connection = "AzureWebJobsStorage")] CloudTable todoTable,
+            [Table("todo", Connection = "AzureWebJobsStorage")] CloudTable TodoTable,
             ILogger log)
         {
             log.LogInformation("Recieved a new todo.");
@@ -53,7 +53,7 @@ namespace julian.arteaga.functions.Functions
 
 
             TableOperation AddOperation = TableOperation.Insert(todoEntity);
-            await todoTable.ExecuteAsync(AddOperation);
+            await TodoTable.ExecuteAsync(AddOperation);
 
             string message = "New todo stores in table";
             log.LogInformation(message);
@@ -71,20 +71,20 @@ namespace julian.arteaga.functions.Functions
         [FunctionName(nameof(Updatetodo))]
         public static async Task<IActionResult> Updatetodo(
            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todo/{id}")] HttpRequest req,
-           [Table("todo", Connection = "AzureWebJobsStorage")] CloudTable todoTable,
+           [Table("todo", Connection = "AzureWebJobsStorage")] CloudTable TodoTable,
            string id,
            ILogger log)
         {
             log.LogInformation($"updated fot todo: {id}. received.");
 
-          
+
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             todo Todo = JsonConvert.DeserializeObject<todo>(requestBody); //leyendo el cuerpo del mensaje
 
 
             //Validate todo id
             TableOperation findOperation = TableOperation.Retrieve<todoEntity>("TODO", id);
-            TableResult findResult = await todoTable.ExecuteAsync(findOperation);
+            TableResult findResult = await TodoTable.ExecuteAsync(findOperation);
             if (findResult.Result == null)
             {
                 return new BadRequestObjectResult(new Response
@@ -106,7 +106,7 @@ namespace julian.arteaga.functions.Functions
             }
 
             TableOperation AddOperation = TableOperation.Replace(TodoEntity);
-            await todoTable.ExecuteAsync(AddOperation);
+            await TodoTable.ExecuteAsync(AddOperation);
 
             string message = $"todo: {id}, updated in table.";
 
@@ -122,6 +122,62 @@ namespace julian.arteaga.functions.Functions
             });
         }
 
+        [FunctionName(nameof(GetAlltodos))]
+        public static async Task<IActionResult> GetAlltodos(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todo")] HttpRequest req,
+            [Table("todo", Connection = "AzureWebJobsStorage")] CloudTable TodoTable,
+            ILogger log)
+        {
+            log.LogInformation("Get all todo REceived.");
+
+            TableQuery<todoEntity> query = new TableQuery<todoEntity>();
+            TableQuerySegment<todoEntity> Todos = await TodoTable.ExecuteQuerySegmentedAsync(query, null);
+
+            string message = "Retrieved all todos";
+            log.LogInformation(message);
+
+
+            return new OkObjectResult(new Response
+            {
+                IaSuccess = true,
+                message = message,
+                Result = Todos
+
+            });
+        }
+
+
+
+        [FunctionName(nameof(GetTodoById))]
+        public static IActionResult GetTodoById (
+                 [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todo/{id}")] HttpRequest req,
+                 [Table("todo", "TODO", "{id]", Connection = "AzureWebJobsStorage")] todoEntity TodoEntity,
+                 string id,
+                 ILogger log)
+        {
+            log.LogInformation($"Get Todo by: {id}, received.");
+
+            if (TodoEntity == null)
+            {
+                return new BadRequestObjectResult(new Response
+                {
+                    IaSuccess = false,
+                    message = "todo not found."
+                });
+
+                string message = $"todo: {id}, retrieved.";
+                log.LogInformation(message);
+
+
+                return new OkObjectResult(new Response
+                {
+                    IaSuccess = true,
+                    message = message,
+                    Result = TodoEntity
+
+                });
+            }
+        }
 
     }
 }
